@@ -58,6 +58,7 @@ header {
 }
 
 nav {
+  position: relative;
   height: 60px;
   display: flex;
   justify-content: space-between;
@@ -81,6 +82,7 @@ nav .menu {
   }
   nav .logo {
     font-size: 1.5rem;
+    margin-top: 0.6rem; /* small top spacing to make the logo stand out on mobile */
   }
   .cta {
     display: none; /* hide CTA in header on mobile; adjust as preferred */
@@ -92,7 +94,7 @@ nav .menu.open {
   position: absolute;
   left: 0;
   background-color: black;
-  top: 60px;
+  top: calc(100% + 0.4rem);
   flex-direction: column;
   gap: 1.2rem;
   width: 100%;
