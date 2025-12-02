@@ -6,6 +6,7 @@
 }
 
 :root {
+  --header-height: 80px;
   --primary-color: #d64726;
   --primary-dark: #b53a1e;
   --secondary-color: #1a1a1a;
@@ -32,6 +33,7 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-light);
   overflow-x: hidden;
+  padding-top: var(--header-height);
 }
 
 a {
@@ -243,13 +245,14 @@ nav .menu li a:hover::after {
 
 /* Hero Section - Enhanced */
 .hero {
-  height: 100vh;
-  min-height: 700px;
+  min-height: calc(100vh - var(--header-height));
+  height: auto;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding-top: 80px;
+  padding-top: calc(var(--header-height) + 12px);
+  padding-bottom: 3rem;
 }
 
 .hero-bg-pattern {
@@ -454,6 +457,8 @@ nav .menu li a:hover::after {
     flex-direction: column;
     text-align: center;
     justify-content: center;
+    min-height: 60vh;
+    padding-top: calc(var(--header-height) + 16px);
   }
   
   .hero-content {

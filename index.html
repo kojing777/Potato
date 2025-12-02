@@ -368,6 +368,12 @@
             heroContent.classList.add('visible');
           }, 300);
         }
+        const heroImgWrap = document.querySelector('.hero-img-wrap');
+        if (heroImgWrap) {
+          setTimeout(() => {
+            heroImgWrap.classList.add('in-view');
+          }, 600);
+        }
       });
     </script>
   </body>
