@@ -162,7 +162,7 @@ const Navbar = () => {
           whileTap={{ scale: 0.95 }}
         >
           <motion.div
-            className={`flex items-center justify-center rounded-full bg-gradient-to-br from-red-300 to-purple-600 
+            className={`flex items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-pink-500
             transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 w-9 h-9 md:w-10 md:h-10 logo-glow`}
             whileHover={{ rotate: 360 }}
             transition={{ duration: 0.5 }}

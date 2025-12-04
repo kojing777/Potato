@@ -322,7 +322,7 @@ const Hero = () => {
         <motion.div
           animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-4 -right-4 md:-top-6 md:-right-6 w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/30"
+          className="absolute -top-4 -right-4 md:-top-6 md:-right-6 w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/30"
         >
           <span className="text-white roboto-slab font-bold">React</span>
         </motion.div>
@@ -334,7 +334,7 @@ const Hero = () => {
             ease: "easeInOut",
             delay: 1,
           }}
-          className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/30"
+          className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/30"
         >
           <span className="text-white roboto-slab font-bold">JS</span>
         </motion.div>
