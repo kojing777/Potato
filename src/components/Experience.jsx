@@ -240,7 +240,7 @@ const Experience = () => {
               className="space-y-8"
             >
               <motion.h2
-                className="text-2xl roboto-slab font-bold mb-8 text-center flex items-center justify-center gap-3"
+                className="text-2xl pt-serif-regular font-bold mb-8 text-center flex items-center justify-center gap-3"
                 initial={{ opacity: 0, y: -10 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5 }}
@@ -255,7 +255,7 @@ const Experience = () => {
               </motion.h2>
 
               <motion.div
-                className="relative"
+                className="relative roboto-slab"
                 variants={containerVariants}
                 initial="hidden"
                 animate={isInView ? "visible" : "hidden"}
@@ -286,7 +286,7 @@ const Experience = () => {
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4">
                         <div className="flex items-center gap-3">
                           <div>
-                            <h3 className="text-lg sm:text-xl alkalami-regular font-bold">{exp.role}</h3>
+                            <h3 className="text-lg md:text-2xl sm:text-xl pt-serif-regular font-bold">{exp.role}</h3>
                             <p className="text-slate-300 roboto-slab">{exp.company}</p>
                           </div>
                         </div>
