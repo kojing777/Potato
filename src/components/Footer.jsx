@@ -81,10 +81,10 @@ const Footer = () => {
           transition={{ duration: 0.6 }}
           className="text-center md:text-left"
         >
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="text-3xl sofia-regular font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Bijaya Tamang
           </h2>
-          <p className="text-sm text-slate-400 mt-1">MERN Stack Developer.</p>
+          <p className="text-sm roboto-slab text-slate-400 mt-1">MERN Stack Developer.</p>
         </motion.div>
 
         {/* Navigation Links */}
