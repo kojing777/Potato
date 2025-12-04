@@ -1,7 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  AnimatePresence,
+} from "framer-motion";
 import {
   FaGithub,
   FaExternalLinkAlt,
@@ -9,55 +14,28 @@ import {
   FaNodeJs,
   FaMobile,
   FaServer,
+  FaCode,
+  FaLayerGroup,
 } from "react-icons/fa";
 import { TbBrandFramerMotion } from "react-icons/tb";
 import { FaHtml5 } from "react-icons/fa";
 import { FaJsSquare } from "react-icons/fa";
 import { SiCss3 } from "react-icons/si";
-
-import { SiMongodb, SiTailwindcss } from "react-icons/si";
-
-const visualData = [
-  {
-    key: 1,
-    url: "https://res.cloudinary.com/dp27ua535/image/upload/v1757216017/Screenshot_2025-09-07_091826_w6iplj.png",
-    label: "Groceezy",
-    liveUrl: "https://groceezy.kojing.me/",
-    githubUrl: "https://github.com/kojing777/Groceezy-Frontend-v1.0",
-  },
-  {
-    key: 2,
-    url: "https://res.cloudinary.com/dp27ua535/image/upload/v1757215916/Screenshot_2025-09-07_091455_k50kfz.png",
-    label: "MeubelHouse",
-    liveUrl: "https://meubel-house-iota.vercel.app/",
-    githubUrl: "https://github.com/kojing777/MeubelHouse",
-  },
-  {
-    key: 3,
-    url: "https://res.cloudinary.com/dp27ua535/image/upload/v1757217075/Screenshot_2025-09-07_093517_ancuhs.png",
-    label: "fra-cheur",
-    liveUrl: "https://fra-cheur.vercel.app/",
-    githubUrl: "https://github.com/kojing777/Fra-cheur-v1.1",
-  },
-  {
-    key: 4,
-    url: "https://res.cloudinary.com/dp27ua535/image/upload/v1757216059/Screenshot_2025-09-07_091908_gjnpqc.png",
-    label: "Portfolio",
-    liveUrl: "https://portfolio-wine-alpha-82.vercel.app/",
-    githubUrl: "https://github.com/kojing777/Skiper",
-  },
-];
+import { SiMongodb, SiTailwindcss, SiExpress } from "react-icons/si";
 
 const Projects = () => {
-  const [activeTab, setActiveTab] = useState("showcase");
-  const [focusedItem, setFocusedItem] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
   const [isLargeScreen, setIsLargeScreen] = useState(true);
-  const [flippedCard, setFlippedCard] = useState(null);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const containerRef = useRef(null);
 
   const cursorX = useMotionValue(0);
   const cursorY = useMotionValue(0);
   const smoothX = useSpring(cursorX, { stiffness: 300, damping: 40 });
   const smoothY = useSpring(cursorY, { stiffness: 300, damping: 40 });
+  const scroll = useMotionValue(0);
+  const smoothScroll = useSpring(scroll, { stiffness: 100, damping: 30 });
+  const [sectionInView, setSectionInView] = useState(false);
 
   useEffect(() => {
     const updateScreen = () => {
@@ -68,26 +46,57 @@ const Projects = () => {
     return () => window.removeEventListener("resize", updateScreen);
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (containerRef.current) {
+        const scrollTop = window.scrollY;
+        const offsetTop = containerRef.current.offsetTop;
+        const height = containerRef.current.offsetHeight;
+        const windowHeight = window.innerHeight;
+
+        const progress = Math.max(
+          0,
+          Math.min(1, (scrollTop + windowHeight - offsetTop) / (height * 0.7))
+        );
+        setScrollProgress(progress);
+        // drive motion value for smoother, interactive scroll-linked animations
+        scroll.set(progress);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Observe when this section actually enters the viewport to trigger entry animations
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setSectionInView(true);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    obs.observe(containerRef.current);
+    return () => obs.disconnect();
+  }, [containerRef]);
+
   const onMouseTrack = (e) => {
     cursorX.set(e.clientX);
     cursorY.set(e.clientY);
   };
 
-  const onHoverActivate = (item) => {
-    setFocusedItem(item);
-  };
-
-  const onHoverDeactivate = () => {
-    setFocusedItem(null);
-  };
-
-  // Projects data
   const projects = [
     {
       id: 1,
       title: "Groceezy",
       description:
-        "A modern grocery delivery platform that connects local stores with customers. Features real-time inventory tracking, smart recommendations, and seamless checkout process.",
+        "A modern grocery delivery platform connecting local stores with customers in real-time.",
       features: [
         "Real-time inventory tracking",
         "Smart recommendation engine",
@@ -95,82 +104,104 @@ const Projects = () => {
         "Store management dashboard",
       ],
       technologies: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+      stack: ["Frontend", "Backend", "Database", "DevOps"],
       icons: [FaReact, FaNodeJs, SiMongodb, FaServer],
       githubUrl: "https://github.com/kojing777/Groceezy-Frontend-v1.0",
       liveUrl: "https://groceezy.kojing.me/",
       image:
         "https://res.cloudinary.com/dp27ua535/image/upload/v1757216017/Screenshot_2025-09-07_091826_w6iplj.png",
+      color: "#4F46E5",
+      type: "Full-Stack",
     },
     {
       id: 2,
       title: "Fra-cheur",
       description:
-        "An artisanal bakery e-commerce platform offering fresh baked goods, custom orders, and local delivery.",
+        "Artisanal bakery e-commerce with custom order interface and local delivery tracking.",
       features: [
         "Custom cake design interface",
         "Local delivery zone mapping",
         "Seasonal specials calendar",
+        "Order tracking system",
       ],
-      technologies: ["HTML", "CSS", "JS"],
+      technologies: ["HTML5", "CSS3", "JavaScript", "Responsive Design"],
+      stack: ["Frontend", "UI/UX", "Mobile-First"],
       icons: [FaHtml5, SiCss3, FaJsSquare, FaMobile],
       githubUrl: "https://github.com/kojing777/Fra-cheur-v1.1",
       liveUrl: "https://fra-cheur.vercel.app/",
       image:
         "https://res.cloudinary.com/dp27ua535/image/upload/v1757217075/Screenshot_2025-09-07_093517_ancuhs.png",
+      color: "#8B5CF6",
+      type: "Frontend",
     },
     {
       id: 3,
       title: "MeubelHouse",
       description:
-        "An elegant furniture e-commerce experience with AR preview functionality. Customers can visualize products in their space before purchasing, with filters for style, room, and dimensions",
+        "Furniture e-commerce with AR preview, room customization, and complete order management.",
       features: [
+        "AR product visualization",
         "Room style filters",
         "Customization options",
-        "Delivery scheduling",
         "Assembly service booking",
       ],
       technologies: ["MongoDB", "Express", "React", "Node.js", "Tailwind CSS"],
+      stack: ["Full-Stack", "3D Integration", "E-commerce"],
       icons: [FaReact, FaNodeJs, SiMongodb, SiTailwindcss],
       githubUrl: "https://github.com/kojing777/MeubelHouse",
       liveUrl: "https://meubel-house-iota.vercel.app/",
       image:
         "https://res.cloudinary.com/dp27ua535/image/upload/v1757215916/Screenshot_2025-09-07_091455_k50kfz.png",
+      color: "#3B82F6",
+      type: "Full-Stack",
     },
     {
       id: 4,
-      title: "Portfolio",
+      title: "Lama AI",
       description:
-        "My responsive developer portfolio showcasing projects, skills, and experience. Built with modern web technologies and featuring interactive elements and smooth animations.",
+        "AI-powered full-stack web application providing text generation, summarization and image creation with a clean, responsive UI.",
       features: [
-        "Interactive project showcase",
-        "Smooth animations and transitions",
-        "Responsive design",
-        "Performance optimized",
+        "AI text generation and summarization",
+        "On-demand image creation",
+        "Secure authentication and user management",
+        "Image storage via ImageKit and payments with Stripe",
       ],
-      technologies: ["React", "Tailwind CSS", "Framer Motion"],
-      icons: [FaMobile, FaReact, TbBrandFramerMotion, SiTailwindcss],
-      githubUrl: "https://github.com/kojing777/Skiper",
-      liveUrl: "https://portfolio-wine-alpha-82.vercel.app/",
+      technologies: ["MERN", "Tailwind CSS", "OpenAI", "ImageKit", "Stripe"],
+      stack: ["Full-Stack", "AI Integration", "Payments"],
+      icons: [FaReact, FaNodeJs, SiMongodb, SiTailwindcss],
+      githubUrl: "https://github.com/kojing777/Lama-AI",
+      liveUrl: "https://lama-ai-five.vercel.app/",
       image:
-        "https://res.cloudinary.com/dp27ua535/image/upload/v1757216059/Screenshot_2025-09-07_091908_gjnpqc.png",
+        "https://res.cloudinary.com/dp27ua535/image/upload/v1764830451/Screenshot_2025-12-04_122538_nqfmkn.png",
+      color: "#06B6D4",
+      type: "Full-Stack",
     },
   ];
 
   return (
     <section
       id="projects"
-      className="relative min-h-screen py-20 px-6 md:px-20 lg:px-32 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden"
+      ref={containerRef}
+      className="relative min-h-screen py-20 px-4 md:px-8 lg:px-16 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white overflow-hidden"
+      onMouseMove={onMouseTrack}
     >
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Moving Gradient Bars */}
         <motion.div
-          animate={{ x: [0, 40, 0], y: [0, -20, 0], rotate: [0, 15, 0] }}
+          animate={{
+            x: [0, 40, 0],
+            y: [0, -20, 0],
+            rotate: [0, 15, 0],
+          }}
           transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-1/3 left-10 w-2 h-20 bg-gradient-to-b from-cyan-400/20 to-blue-500/20 rounded-full blur-sm"
         />
         <motion.div
-          animate={{ x: [0, -30, 0], y: [0, 30, 0], rotate: [0, -20, 0] }}
+          animate={{
+            x: [0, -30, 0],
+            y: [0, 30, 0],
+            rotate: [0, -20, 0],
+          }}
           transition={{
             duration: 20,
             repeat: Infinity,
@@ -180,373 +211,400 @@ const Projects = () => {
           className="absolute bottom-1/4 right-12 w-2 h-24 bg-gradient-to-b from-purple-400/20 to-pink-500/20 rounded-full blur-sm"
         />
 
-        {/* Subtle grid overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:20px_20px] opacity-15"></div>
+        {/* Progress indicator */}
+        <motion.div
+          className="absolute right-8 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-indigo-500/50 to-transparent"
+          style={{ scaleY: scrollProgress }}
+        />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto">
         {/* Header Section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="mx-auto mb-16 text-center"
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12 md:mb-16"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6">
-            My{" "}
-            <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
-              Projects
-            </span>
-          </h1>
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-8">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl alkalami-regular font-extrabold">
+              My{" "}
+              <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
+                Projects
+              </span>
+            </h1>
+          </div>
+
+          <p className="text-lg md:text-xl roboto-slab text-slate-300 max-w-3xl mx-auto mb-8">
             Here are some of the projects I've built using modern technologies
-            and best practices
+            and best practices{" "}
           </p>
 
-          {/* Tab Navigation */}
-          <div className="flex justify-center space-x-4 mb-12">
-            <button
-              onClick={() => setActiveTab("showcase")}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                activeTab === "showcase"
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
-                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-              }`}
-            >
-              Interactive Showcase
-            </button>
-            <button
-              onClick={() => setActiveTab("projects")}
-              className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
-                activeTab === "projects"
-                  ? "bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg"
-                  : "bg-slate-800 text-slate-300 hover:bg-slate-700"
-              }`}
-            >
-              Project Portfolio
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Content based on active tab */}
-        {activeTab === "showcase" ? (
-          <motion.div
+          {/* <motion.div
+            className="flex flex-wrap justify-center gap-2 mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="relative mx-auto w-full min-h-fit bg-slate-800/30 backdrop-blur-md rounded-xl border border-slate-700/50 overflow-hidden"
-            onMouseMove={onMouseTrack}
-            onMouseLeave={onHoverDeactivate}
+            transition={{ delay: 0.3 }}
           >
-            {visualData.map((item) => (
-              <div
-                key={item.key}
-                className="p-4 cursor-pointer relative sm:flex items-center justify-between group"
-                onMouseEnter={() => onHoverActivate(item)}
-              >
-                {!isLargeScreen && (
-                  <img
-                    src={item.url}
-                    className="sm:w-32 sm:h-20 w-full h-52 object-cover rounded-md"
-                    alt={item.label}
-                  />
-                )}
-                <h2
-                  className={`font-mono uppercase md:text-5xl sm:text-2xl text-xl font-semibold sm:py-6 py-2 leading-[100%] relative transition-colors duration-300 ${
-                    focusedItem?.key === item.key
-                      ? "mix-blend-difference z-20 text-gray-300"
-                      : "text-white"
-                  }`}
-                >
-                  {item.label}
-                </h2>
+            <span className="px-4 py-2 bg-indigo-500/10 text-indigo-300 rounded-full text-sm font-medium">
+              React
+            </span>
+            <span className="px-4 py-2 bg-purple-500/10 text-purple-300 rounded-full text-sm font-medium">
+              Node.js
+            </span>
+            <span className="px-4 py-2 bg-blue-500/10 text-blue-300 rounded-full text-sm font-medium">
+              MongoDB
+            </span>
+            <span className="px-4 py-2 bg-pink-500/10 text-pink-300 rounded-full text-sm font-medium">
+              Tailwind
+            </span>
+          </motion.div> */}
+        </motion.div>
 
-                <div
-                  className={`sm:flex hidden items-center gap-3 transition-all duration-300 ease-out ${
-                    focusedItem?.key === item.key
-                      ? "mix-blend-difference z-20 bg-white text-black rounded-full"
-                      : ""
-                  }`}
-                >
-                  {/* GitHub Link */}
-                  <motion.a
-                    target="_blank"
-                    href={item.githubUrl}
-                    whileHover={{ scale: 1.1 }}
-                    className="p-2 rounded-full hover:bg-slate-700/50 transition-colors"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FaGithub className="w-5 h-5" />
-                  </motion.a>
-
-                  {/* Live Project Link */}
-                  <motion.a
-                    target="_blank"
-                    href={item.liveUrl}
-                    whileHover={{ scale: 1.1 }}
-                    className="p-2 rounded-full hover:bg-slate-700/50 transition-colors flex items-center gap-1"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <FaExternalLinkAlt className="w-4 h-4" />
-                    <span className="text-sm font-medium">View Live</span>
-                  </motion.a>
-                </div>
-
-                <div
-                  className={`h-[2px] bg-white/70 absolute bottom-0 left-0 transition-all duration-300 ease-linear ${
-                    focusedItem?.key === item.key ? "w-full" : "w-0"
-                  }`}
-                />
-              </div>
-            ))}
-
-            {isLargeScreen && focusedItem && (
+        {/* Main Showcase */}
+        <div className="relative">
+          {/* Project Cards Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-12">
+            {projects.map((project, index) => (
               <motion.div
-                className="fixed z-30 pointer-events-none"
+                key={project.id}
+                initial={{ opacity: 0 }}
+                animate={sectionInView ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.08 }}
+                whileHover={{ y: -5 }}
+                className="group relative"
+                // subtle parallax: cards move slightly based on scroll progress
                 style={{
-                  left: smoothX,
-                  top: smoothY,
-                  x: "-50%",
-                  y: "-50%",
+                  transform: `translateY(${
+                    -scrollProgress * (8 + index * 3)
+                  }px)`,
                 }}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.5 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
-                <div className="w-[500px] h-auto max-h-[700px] overflow-hidden rounded-lg bg-slate-950 border border-slate-700 shadow-2xl">
-                  <img
-                    src={focusedItem.url}
-                    alt={focusedItem.label}
-                    className="w-full h-auto object-contain"
-                  />
-
-                  {/* Links on the hover image */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 to-transparent p-4 flex justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <motion.a
-                      href={focusedItem.githubUrl}
-                      className="p-2 bg-slate-800/80 rounded-full backdrop-blur-sm hover:bg-slate-700/80 transition-colors"
-                      whileHover={{ scale: 1.1 }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(focusedItem.githubUrl, "_blank");
-                      }}
-                    >
-                      <FaGithub className="w-5 h-5 text-white" />
-                    </motion.a>
-                    <motion.a
-                      href={focusedItem.liveUrl}
-                      className="px-3 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full text-sm font-medium flex items-center gap-1 hover:from-indigo-500 hover:to-purple-500 transition-colors"
+                <div
+                  className="relative rounded-2xl overflow-hidden border border-slate-700/50 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm transition-all duration-300 group-hover:border-slate-600/70"
+                  onClick={() => setSelectedProject(project)}
+                >
+                  {/* Project Image */}
+                  <div className="relative h-48 md:h-56 overflow-hidden">
+                    <motion.img
+                      src={project.image}
+                      alt={project.title}
+                      className="w-full h-full object-cover object-top"
                       whileHover={{ scale: 1.05 }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(focusedItem.liveUrl, "_blank");
-                      }}
-                    >
-                      <FaExternalLinkAlt className="w-4 h-4" />
-                      <span>View Live</span>
-                    </motion.a>
+                      transition={{ duration: 0.4 }}
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent" />
+
+                    {/* Project Type Badge */}
+                    <div className="absolute top-4 right-4">
+                      <span
+                        className={`px-3 pt-serif-regular py-1 rounded-full text-sm font-medium ${
+                          project.type === "Full-Stack"
+                            ? "bg-gradient-to-r from-indigo-400/50 to-purple-400/10 text-black"
+                            : "bg-gradient-to-r from-blue-500/20 to-cyan-500/40 text-black"
+                        }`}
+                      >
+                        {project.type}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Project Content */}
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <h3 className="text-xl alkalami-regular md:text-2xl font-bold text-white">
+                        {project.title}
+                      </h3>
+                      <div className="flex gap-2">
+                        {project.icons.map((Icon, i) => (
+                          <motion.div
+                            key={i}
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            className="p-2 bg-slate-800/50 rounded-lg"
+                          >
+                            <Icon className="text-slate-300" />
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <p className="text-slate-300 roboto-slab mb-4 line-clamp-2">
+                      {project.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.technologies.slice(0, 4).map((tech, i) => (
+                        <span
+                          key={i}
+                          className="px-3 py-1 bg-slate-800/70 text-slate-300 rounded-full text-xs"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm pt-serif-regular text-slate-400">
+                        <FaCode className="text-indigo-400" />
+                        <span>Click for details</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <motion.a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
+                          whileHover={{ scale: 1.05 }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <FaGithub className="text-white" />
+                        </motion.a>
+                        <motion.a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 rounded-lg transition-all"
+                          whileHover={{ scale: 1.05 }}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <FaExternalLinkAlt className="text-white" />
+                        </motion.a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
-            )}
-          </motion.div>
-        ) : (
+            ))}
+          </div>
+
+          {/* Developer Skills Section */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
+            transition={{ delay: 0.8 }}
+            className="mt-20"
           >
-            {projects.map((project, index) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                index={index}
-                isFlipped={flippedCard === project.id}
-                setFlipped={setFlippedCard}
-              />
-            ))}
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+              <span className="bg-gradient-to-r from-indigo-400 to-purple-400 text-transparent bg-clip-text">
+                Development Stack
+              </span>
+            </h2>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+              {[
+                {
+                  icon: FaReact,
+                  label: "Frontend",
+                  desc: "React, Next.js, Framer Motion",
+                },
+                {
+                  icon: FaNodeJs,
+                  label: "Backend",
+                  desc: "Node.js, Express, REST APIs",
+                },
+                {
+                  icon: SiMongodb,
+                  label: "Database",
+                  desc: "MongoDB, Mongoose, Prisma",
+                },
+                {
+                  icon: FaServer,
+                  label: "DevOps",
+                  desc: "Vercel, Cloudinary, Git",
+                },
+              ].map((skill, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                  className="p-6 rounded-2xl bg-gradient-to-br from-slate-800/30 to-slate-900/30 border border-slate-700/30 backdrop-blur-sm text-center"
+                >
+                  <div className="inline-flex p-3 rounded-full bg-gradient-to-r from-indigo-500/10 to-purple-500/10 mb-4">
+                    <skill.icon className="text-3xl text-indigo-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">
+                    {skill.label}
+                  </h3>
+                  <p className="text-sm text-slate-400">{skill.desc}</p>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
-        )}
+        </div>
+
+        {/* Project Detail Modal */}
+        <AnimatePresence>
+          {selectedProject && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm"
+                onClick={() => setSelectedProject(null)}
+              />
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="fixed inset-4 md:inset-10 lg:inset-20 z-50 overflow-hidden rounded-2xl border border-slate-700 bg-gradient-to-br from-slate-900 to-slate-950"
+              >
+                <div className="h-full overflow-y-auto">
+                  {/* Modal Header */}
+                  <div className="sticky top-0 z-10 bg-gradient-to-b from-slate-900 to-slate-900/90 backdrop-blur-sm border-b border-slate-700/50 p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-3xl alkalami-regular md:text-4xl font-bold text-white">
+                          {selectedProject.title}
+                        </h2>
+                        <div className="flex items-center gap-3 mt-2">
+                          <span
+                            className={`px-4 py-1 rounded-full font-medium ${
+                              selectedProject.type === "Full-Stack"
+                                ? "bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-300"
+                                : "bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-300"
+                            }`}
+                          >
+                            {selectedProject.type}
+                          </span>
+                          <div className="flex gap-2">
+                            {selectedProject.icons.map((Icon, i) => (
+                              <div
+                                key={i}
+                                className="p-2 bg-slate-800/50 rounded-lg"
+                              >
+                                <Icon className="text-slate-300" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setSelectedProject(null)}
+                        className="p-3 hover:bg-slate-800 rounded-full transition-colors"
+                      >
+                        <span className="text-2xl">×</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Modal Content */}
+                  <div className="p-6 md:p-8">
+                    {/* Project Image */}
+                    <div className="rounded-xl overflow-hidden mb-8">
+                      <img
+                        src={selectedProject.image}
+                        alt={selectedProject.title}
+                        className="w-full h-auto"
+                      />
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-8">
+                      {/* Description */}
+                      <div className="md:col-span-2">
+                        <h3 className="text-2xl font-bold text-white mb-4">
+                          About This Project
+                        </h3>
+                        <p className="text-slate-300 mb-6">
+                          {selectedProject.description}
+                        </p>
+
+                        <div className="mb-8">
+                          <h4 className="text-xl font-bold text-white mb-4">
+                            Key Features
+                          </h4>
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            {selectedProject.features.map((feature, i) => (
+                              <motion.div
+                                key={i}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                                className="flex items-start gap-3 p-4 rounded-lg bg-slate-800/30"
+                              >
+                                <div className="p-2 rounded-full bg-indigo-500/20">
+                                  <div className="w-2 h-2 rounded-full bg-indigo-400" />
+                                </div>
+                                <span className="text-slate-300">
+                                  {feature}
+                                </span>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Tech Stack & Links */}
+                      <div>
+                        <div className="mb-8">
+                          <h4 className="text-xl font-bold text-white mb-4">
+                            Tech Stack
+                          </h4>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedProject.technologies.map((tech, i) => (
+                              <span
+                                key={i}
+                                className="px-4 py-2 bg-slate-800/50 text-slate-300 rounded-lg text-sm"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="mb-8">
+                          <h4 className="text-xl font-bold text-white mb-4">
+                            Development Stack
+                          </h4>
+                          <div className="space-y-2">
+                            {selectedProject.stack.map((stack, i) => (
+                              <div
+                                key={i}
+                                className="flex items-center gap-3 text-slate-300"
+                              >
+                                <div className="w-2 h-2 rounded-full bg-indigo-400" />
+                                <span>{stack}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <motion.a
+                            href={selectedProject.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-3 w-full px-6 py-4 bg-slate-800 hover:bg-slate-700 rounded-xl font-medium transition-colors"
+                            whileHover={{ scale: 1.02 }}
+                          >
+                            <FaGithub />
+                            View Source Code
+                          </motion.a>
+                          <motion.a
+                            href={selectedProject.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-3 w-full px-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 rounded-xl font-medium transition-all"
+                            whileHover={{ scale: 1.02 }}
+                          >
+                            <FaExternalLinkAlt />
+                            View Live Demo
+                          </motion.a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </div>
     </section>
-  );
-};
-
-// Project Card Component
-const ProjectCard = ({ project, index, isFlipped, setFlipped }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative h-[340px] sm:h-[400px] w-full [perspective:2000px]"
-      onMouseEnter={() => setFlipped(project.id)}
-      onMouseLeave={() => setFlipped(null)}
-    >
-      <div
-        className={`relative h-full w-full transition-all duration-700 [transform-style:preserve-3d] ${
-          isFlipped
-            ? "[transform:rotateY(180deg)]"
-            : "[transform:rotateY(0deg)]"
-        }`}
-      >
-        {/* Front of card */}
-        <div
-          className={`absolute inset-0 h-full w-full rounded-2xl overflow-hidden border border-slate-700/60
-            bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-xl
-            transition-all duration-700 ${
-              isFlipped ? "opacity-0" : "opacity-100"
-            }`}
-        >
-          {/* Project image */}
-          <div className="absolute inset-0 flex items-center justify-center p-2 sm:p-4">
-            <img
-              src={project.image}
-              alt={project.title}
-              className="max-w-full max-h-full object-contain rounded-md"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-slate-900/10"></div>
-          </div>
-
-          {/* Tech icons floating animation */}
-          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 flex gap-1 sm:gap-2">
-            {project.icons.map((Icon, i) => (
-              <motion.div
-                key={i}
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: i * 0.1 + 0.3 }}
-                className="p-1 sm:p-2 bg-slate-800/80 rounded-full backdrop-blur-sm"
-              >
-                <Icon className="text-base sm:text-lg text-indigo-400" />
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Content */}
-          <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6">
-            <h3 className="text-lg sm:text-xl font-bold mb-2 text-white">
-              {project.title}
-            </h3>
-            <div className="flex flex-wrap gap-1 sm:gap-2 mb-2 sm:mb-4">
-              {project.technologies.map((tech, i) => (
-                <span
-                  key={i}
-                  className="px-2 py-1 text-xs bg-indigo-900/50 text-indigo-300 rounded-full"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2"
-            >
-              <span className="text-slate-300 text-xs sm:text-sm">
-                Hover to see details
-              </span>
-              <div className="flex gap-1 sm:gap-2">
-                <motion.a
-                  whileHover={{ scale: 1.1 }}
-                  href={project.githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-slate-800/80 rounded-full backdrop-blur-sm"
-                >
-                  <FaGithub className="text-base sm:text-lg text-white" />
-                </motion.a>
-                <motion.a
-                  whileHover={{ scale: 1.1 }}
-                  href={project.liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-slate-800/80 rounded-full backdrop-blur-sm"
-                >
-                  <FaExternalLinkAlt className="text-base sm:text-lg text-white" />
-                </motion.a>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Back of card */}
-        <div
-          className={`absolute inset-0 h-full w-full rounded-2xl overflow-hidden border border-slate-700/60
-            bg-gradient-to-br from-slate-800 to-slate-900 backdrop-blur-xl p-3 sm:p-6 flex flex-col
-            transition-all duration-700 [transform:rotateY(180deg)] ${
-              !isFlipped ? "opacity-0" : "opacity-100"
-            }`}
-        >
-          <h3 className="text-lg sm:text-xl font-bold mb-4 text-white">
-            {project.title}
-          </h3>
-
-          <p className="text-slate-300 mb-4 sm:mb-6 flex-grow text-xs sm:text-base">
-            {project.description}
-          </p>
-
-          <div className="mb-4 sm:mb-6">
-            <h4 className="font-semibold mb-2 sm:mb-3 text-indigo-300 text-xs sm:text-base">
-              Features
-            </h4>
-            <ul className="space-y-1 sm:space-y-2">
-              {project.features.map((feature, i) => (
-                <motion.li
-                  key={i}
-                  initial={{ x: -10, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex items-center text-xs sm:text-sm text-slate-400"
-                >
-                  <span className="w-2 h-2 bg-indigo-500 rounded-full mr-2 sm:mr-3"></span>
-                  {feature}
-                </motion.li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="mt-auto flex justify-between items-center">
-            <div className="flex gap-1 sm:gap-2">
-              {project.icons.map((Icon, i) => (
-                <div
-                  key={i}
-                  className="p-1 sm:p-2 bg-slate-800/80 rounded-full"
-                >
-                  <Icon className="text-base sm:text-lg text-indigo-400" />
-                </div>
-              ))}
-            </div>
-
-            <div className="flex gap-2 sm:gap-3">
-              <motion.a
-                whileHover={{ scale: 1.05 }}
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-slate-800 text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2 text-white"
-              >
-                <FaGithub />
-                Code
-              </motion.a>
-              <motion.a
-                whileHover={{ scale: 1.05 }}
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-2 sm:px-4 py-1 sm:py-2 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-xs sm:text-sm font-medium flex items-center gap-1 sm:gap-2 text-white"
-              >
-                <FaExternalLinkAlt />
-                Live Demo
-              </motion.a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </motion.div>
   );
 };
 

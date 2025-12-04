@@ -255,7 +255,7 @@ const AboutMe = () => {
           </motion.h1>
 
           <motion.p
-            className="text-xl max-w-3xl mx-auto text-slate-300 mb-6"
+            className="text-xl max-w-3xl mx-auto roboto-slab text-slate-300 mb-6"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
@@ -298,7 +298,7 @@ const AboutMe = () => {
 
                 {/* Header */}
                 <motion.h2
-                  className="text-3xl font-bold mb-6 flex items-center gap-3"
+                  className="alkalami-regular text-3xl font-bold flex items-center gap-3"
                   whileInView={{ scale: [0.95, 1] }}
                   transition={{ duration: 0.5 }}
                 >
@@ -310,12 +310,12 @@ const AboutMe = () => {
                 </motion.h2>
 
                 {/* Accent line */}
-                <div className="h-1 w-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mb-6"></div>
+                <div className="h-1 w-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mt-2 mb-6"></div>
 
                 {/* Text Content */}
-                <div className="space-y-6">
+                <div className="space-y-5 roboto-slab">
                   <motion.div
-                    className="text-slate-300"
+                    className="roboto-slab text-slate-300"
                     initial={{ opacity: 0, y: 10 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: 0.2, duration: 0.5 }}
@@ -363,7 +363,7 @@ const AboutMe = () => {
               >
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="p-4 bg-gradient-to-br from-indigo-600 to-purple-600 font-medium flex flex-col items-center justify-center shadow-lg"
+                  className="p-4 pt-serif-regular bg-gradient-to-br from-indigo-600 to-purple-600 font-medium flex flex-col items-center justify-center shadow-lg"
                   style={{
                     clipPath:
                       "polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%)",
@@ -375,7 +375,7 @@ const AboutMe = () => {
 
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="p-4 bg-slate-800 font-medium flex flex-col items-center justify-center border border-slate-700/50 shadow-lg"
+                  className="p-4 pt-serif-regular bg-slate-800 font-medium flex flex-col items-center justify-center border border-slate-700/50 shadow-lg"
                   style={{
                     clipPath:
                       "polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%)",
@@ -387,7 +387,7 @@ const AboutMe = () => {
 
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="p-4 bg-gradient-to-br from-pink-600 to-rose-600 font-medium flex flex-col items-center justify-center shadow-lg"
+                  className="p-4 pt-serif-regular bg-gradient-to-br from-pink-600 to-rose-600 font-medium flex flex-col items-center justify-center shadow-lg"
                   style={{
                     clipPath:
                       "polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%)",
@@ -453,7 +453,7 @@ const AboutMe = () => {
                     transition={{ delay: 0.7 }}
                     className="absolute bottom-4 left-0 right-0 text-center z-30"
                   >
-                    <span className="text-xs font-semibold text-purple-300 bg-purple-900/30 backdrop-blur-sm py-2 px-4 rounded-full inline-block border border-purple-700/30">
+                    <span className="text-xs pt-serif-regular font-semibold text-purple-300 bg-purple-900/30 backdrop-blur-sm py-2 px-4 rounded-full inline-block border border-purple-700/30">
                       Interactive Experiences
                     </span>
                   </motion.div>
@@ -461,15 +461,15 @@ const AboutMe = () => {
 
                 {/* Card footer */}
                 <div className="mt-6 text-center">
-                  <h3 className="text-lg font-semibold text-slate-200">
+                  <h3 className="text-lg font-semibold alkalami-regular text-slate-200">
                     Global Reach
                   </h3>
-                  <p className="text-sm text-slate-400 mt-2">
+                  <p className="text-sm roboto-slab text-slate-400 mt-2">
                     Creating solutions that connect people worldwide
                   </p>
 
                   {/* Interactive buttons */}
-                  <div className="flex justify-center gap-4 mt-4">
+                  <div className="flex  justify-center gap-4 mt-4">
                     <motion.button
                       className="px-4 py-2 text-xs bg-indigo-600/30 rounded-full border border-indigo-500/30 text-indigo-300"
                       whileHover={{
@@ -502,23 +502,23 @@ const AboutMe = () => {
 
         {/* Call to Action */}
         <motion.div
-          className="text-center"
+          className="text-center "
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-          <h2 className="text-2xl md:text-3xl font-bold mb-6">
+          <h2 className="text-2xl  alkalami-regular md:text-3xl font-bold mb-6">
             Ready to <span className="text-purple-400">Collaborate </span>?
           </h2>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
+          <p className="text-lg roboto-slab text-slate-300 max-w-2xl mx-auto mb-8">
             I'm always interested in new challenges and opportunities to work on
             exciting projects.
           </p>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-full transition-all duration-300"
+            className="pt-serif-regular bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-full transition-all duration-300"
             onClick={() => {
               const contactSection = document.getElementById('contact');
               if (contactSection) {

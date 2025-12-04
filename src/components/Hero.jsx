@@ -347,7 +347,7 @@ const Hero = () => {
         transition={{ delay: 1.5, duration: 1 }}
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden md:flex flex-col items-center text-slate-400"
       >
-        <span className="text-sm mb-2">Scroll down</span>
+        <span className="text-sm roboto-slab mb-2">Scroll down</span>
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
