@@ -1,5 +1,5 @@
 "use client";
-
+import { ImCross } from "react-icons/im";
 import { useState, useEffect, useRef } from "react";
 import {
   motion,
@@ -386,12 +386,12 @@ const Projects = () => {
             className="mt-20"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              <span className="bg-gradient-to-r from-indigo-400 to-purple-400 text-transparent bg-clip-text">
+              <span className="bg-gradient-to-r from-indigo-400 to-purple-400 alkalami-regular text-transparent bg-clip-text">
                 Development Stack
               </span>
             </h2>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid pt-serif-regular grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {[
                 {
                   icon: FaReact,
@@ -485,9 +485,11 @@ const Projects = () => {
                       </div>
                       <button
                         onClick={() => setSelectedProject(null)}
-                        className="p-3 hover:bg-slate-800 rounded-full transition-colors"
+                        className="p-5 hover:bg-slate-800 rounded-full transition-colors"
                       >
-                        <span className="text-3xl">×</span>
+                        <span className="text-2xl">
+                          <ImCross className="h-4 w-4" />
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -540,8 +542,8 @@ const Projects = () => {
 
                       {/* Tech Stack & Links */}
                       <div>
-                        <div className="mb-8 pt-serif-regular">
-                          <h4 className="text-xl font-bold text-white mb-4">
+                        <div className="mb-8 pt-serif-regular ">
+                          <h4 className="text-xl font-bold text-white  mb-4">
                             Tech Stack
                           </h4>
                           <div className="flex flex-wrap gap-2">
