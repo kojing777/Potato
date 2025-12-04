@@ -511,7 +511,7 @@ const AboutMe = () => {
           <h2 className="text-2xl  alkalami-regular md:text-3xl font-bold mb-6">
             Ready to <span className="text-purple-400">Collaborate </span>?
           </h2>
-          <p className="text-lg roboto-slab text-slate-300 max-w-2xl mx-auto mb-8">
+          <p className="text-lg roboto-slab text-slate-300 max-w-3xl mx-auto mb-8">
             I'm always interested in new challenges and opportunities to work on
             exciting projects.
           </p>
