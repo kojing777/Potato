@@ -186,20 +186,25 @@ const Experience = () => {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <motion.div
-            className="bg-slate-800/50 rounded-full p-1 flex border border-slate-700/30"
+            className="bg-slate-800/50 rounded-full p-1 flex border border-slate-700/30 relative overflow-hidden"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
+            <motion.div
+              className="absolute top-1 bottom-1 w-[calc(50%-4px)] rounded-full bg-indigo-600 shadow-lg"
+              animate={{ x: activeTab === "experience" ? 0 : "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            />
             <motion.button
               variants={itemVariants}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveTab("experience")}
-              className={`px-6 roboto-slab py-3 rounded-full text-sm font-medium flex items-center gap-2 transition-all ${
+              className={`px-6 roboto-slab py-3 rounded-full text-sm font-medium flex items-center gap-2 transition-all relative z-10 ${
                 activeTab === "experience"
-                  ? "bg-indigo-600 shadow-lg"
-                  : "hover:bg-slate-700/50"
+                  ? "text-white"
+                  : "text-slate-300 hover:bg-slate-700/50"
               }`}
             >
               <FaBriefcase />
@@ -210,10 +215,10 @@ const Experience = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setActiveTab("education")}
-              className={`px-6 roboto-slab py-3 rounded-full text-sm font-medium flex items-center gap-2 transition-all ${
+              className={`px-6 roboto-slab py-3 rounded-full text-sm font-medium flex items-center gap-2 transition-all relative z-10 ${
                 activeTab === "education"
-                  ? "bg-indigo-600 shadow-lg"
-                  : "hover:bg-slate-700/50"
+                  ? "text-white"
+                  : "text-slate-300 hover:bg-slate-700/50"
               }`}
             >
               <FaGraduationCap />
@@ -381,8 +386,6 @@ const Experience = () => {
                     <div className="flex items-center gap-4 mb-4">
                       <motion.div
                         className="text-2xl p-3 rounded-full bg-purple-600/20"
-                        whileHover={{ rotate: 360 }}
-                        transition={{ duration: 0.5 }}
                       >
                         <FaGraduationCap className="text-purple-400" />
                       </motion.div>
