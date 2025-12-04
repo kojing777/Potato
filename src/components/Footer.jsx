@@ -81,7 +81,7 @@ const Footer = () => {
           transition={{ duration: 0.6 }}
           className="text-center md:text-left"
         >
-          <h2 className="text-3xl sofia-regular font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="text-2xl sofia-regular font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Bijaya Tamang
           </h2>
           <p className="text-sm roboto-slab text-slate-400 mt-1">MERN Stack Developer.</p>
@@ -93,7 +93,7 @@ const Footer = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-6 text-sm font-medium"
+          className="flex flex-wrap pt-serif-regular justify-center gap-6 text-sm font-medium"
         >
           {["Home", "About", "Projects", "Contact"].map((link, i) => (
             <li key={i}>
